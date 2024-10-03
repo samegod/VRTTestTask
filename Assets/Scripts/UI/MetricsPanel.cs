@@ -1,6 +1,6 @@
 using Core;
 using UnityEngine;
-using Vehicles;
+using Vehicle;
 
 namespace UI
 {
@@ -22,7 +22,7 @@ namespace UI
             speedLine.SetValue(playerMetrics.Velocity.ToString("0"));
             rotationsLine.SetValue(playerMetrics.EngineRotations.ToString());
             engineStatusLine.SetValue(playerMetrics.EngineStatus.ToString());
-            gearPositionLine.SetValue(playerMetrics.ActiveGearPositon.ToString());
+            gearPositionLine.SetValue(playerMetrics.ActiveGearPosition.ToString());
             transmissionModeLine.SetValue(playerMetrics.TransmissionOperatingMode.ToString());
             distanceLine.SetValue(playerMetrics.DistanceToTheCar.ToString("0.00"));
         }

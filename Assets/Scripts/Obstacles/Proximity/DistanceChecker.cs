@@ -1,44 +1,50 @@
 using System.Collections.Generic;
+using Obstacles.Core;
 using UnityEngine;
-using Vehicles.Core;
+using UnityEngine.Serialization;
 
-namespace Vehicles.Proximity
+namespace Obstacles.Proximity
 {
     [RequireComponent(typeof(Collider))]
     public class DistanceChecker : MonoBehaviour
     {
-        [SerializeField] private Vehicle checkingVehicle;
+        [FormerlySerializedAs("checkingVehicle")] [SerializeField] private Obstacle checkingObstacle;
 
         private float _distanceToClosestCar;
 
-        private readonly List<IVehicle> _vehiclesInZone = new();
+        private readonly List<IObstacle> _vehiclesInZone = new();
 
         public float DistanceToClosestCar => _distanceToClosestCar;
 
         private void OnTriggerEnter(Collider other)
         {
-            IVehicle newVehicle = other.gameObject.GetComponent<IVehicle>();
+            IObstacle newObstacle = other.gameObject.GetComponent<IObstacle>();
 
-            if (newVehicle != null)
+            if (newObstacle != null)
             {
-                _vehiclesInZone.Add(newVehicle);
+                _vehiclesInZone.Add(newObstacle);
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            IVehicle vehicle = other.gameObject.GetComponent<IVehicle>();
+            IObstacle obstacle = other.gameObject.GetComponent<IObstacle>();
 
-            if (vehicle != null)
+            if (obstacle != null)
             {
-                if (_vehiclesInZone.Contains(vehicle))
+                if (_vehiclesInZone.Contains(obstacle))
                 {
-                    _vehiclesInZone.Remove(vehicle);
+                    _vehiclesInZone.Remove(obstacle);
                 }
             }
         }
 
         private void FixedUpdate()
+        {
+            CalculateDistanceToClosestCar();
+        }
+
+        private void CalculateDistanceToClosestCar()
         {
             if (_vehiclesInZone.Count == 0)
             {
@@ -46,7 +52,7 @@ namespace Vehicles.Proximity
                 return;
             }
 
-            IVehicle closestVehicle = null;
+            IObstacle closestObstacle = null;
             float closestDistance = 9999999;
 
             foreach (var vehicle in _vehiclesInZone)
@@ -54,18 +60,17 @@ namespace Vehicles.Proximity
                 if (vehicle.GetVisible())
                 {
                     float closestCollidersDistance =
-                        GetDistanceBetweenColliders(checkingVehicle.GetCollider(), vehicle.GetCollider());
+                        GetDistanceBetweenColliders(checkingObstacle.GetCollider(), vehicle.GetCollider());
 
                     if (closestCollidersDistance < closestDistance)
                     {
                         closestDistance = closestCollidersDistance;
-                        closestVehicle = vehicle;
+                        closestObstacle = vehicle;
                     }
                 }
 
-                if (closestVehicle != null)
+                if (closestObstacle != null)
                 {
-                    Debug.Log("Distance " + closestDistance);
                     _distanceToClosestCar = closestDistance;
                 }
                 else
@@ -74,18 +79,15 @@ namespace Vehicles.Proximity
                 }
             }
         }
-
+        
         private float GetDistanceBetweenColliders(Collider checkerCollider, Collider targetCollider)
         {
-            Physics.ComputePenetration(
-                checkerCollider, checkerCollider.transform.position, checkerCollider.transform.rotation,
-                targetCollider, targetCollider.transform.position, targetCollider.transform.rotation,
-                out _, out _
-            );
-                    
+            //closest point on player's car collider to obstacle
             Vector3 closestPointB = targetCollider.ClosestPoint(checkerCollider.transform.position);
+            //closest point to obstacle's collider
             Vector3 closestPointA = checkerCollider.ClosestPoint(closestPointB);
 
+            //distance between this points
             float closestCollidersDistance = Vector3.Distance(closestPointA, closestPointB);
             return closestCollidersDistance;
         }

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Vehicles.Core
+namespace Obstacles.Core
 {
-    public class Vehicle : MonoBehaviour, IVehicle
+    public class Obstacle : MonoBehaviour, IObstacle
     {
         [SerializeField] private Renderer mainRenderer;
         [SerializeField] private Collider mainCollider;

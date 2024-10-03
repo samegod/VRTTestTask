@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Vehicles.Core
+namespace Obstacles.Core
 {
-    public interface IVehicle
+    public interface IObstacle
     {
         bool GetVisible();
         Collider GetCollider();

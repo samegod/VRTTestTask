@@ -1,5 +1,5 @@
 using UnityEngine;
-using Vehicles;
+using Vehicle;
 
 namespace Core
 {

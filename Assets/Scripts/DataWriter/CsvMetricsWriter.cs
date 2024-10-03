@@ -1,7 +1,7 @@
 using System.IO;
 using Core;
 using UnityEngine;
-using Vehicles;
+using Vehicle;
 
 namespace DataWriter
 {
@@ -40,7 +40,7 @@ namespace DataWriter
                 metrics.Velocity,
                 metrics.EngineRotations,
                 metrics.EngineStatus,
-                metrics.ActiveGearPositon,
+                metrics.ActiveGearPosition,
                 metrics.TransmissionOperatingMode,
                 metrics.DistanceToTheCar);
             
